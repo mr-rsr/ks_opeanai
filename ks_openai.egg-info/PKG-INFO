@@ -1,0 +1,14 @@
+Metadata-Version: 2.4
+Name: ks_openai
+Version: 1.0.0
+Summary: A simple Python wrapper for OpenAI-like API
+Home-page: https://github.com/yourusername/ks_openai
+Author: Raj Aryan
+Author-email: raj@klopudstac.com
+Requires-Dist: requests
+Requires-Dist: pydantic
+Dynamic: author
+Dynamic: author-email
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: summary
