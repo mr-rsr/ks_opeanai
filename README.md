@@ -1,26 +1,29 @@
-# ks_openai
+# kloud-services
 
-A Python package for interacting with the KS OpenAI-like API.
+A Python package for interacting with multiple AI services including OpenAI and Anthropic Claude APIs.
 
 ## Installation
 
 ```bash
-pip install ks_openai
+pip install kloud-services
 ```
 
 ## Configuration
 
-Set your API key as an environment variable:
+Set your API keys as environment variables:
 
 ```python
 import os
-os.environ["OPENAI_API_KEY"] = "your-api-key-here"
+os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
+os.environ["ANTHROPIC_API_KEY"] = "your-claude-api-key"
 ```
 
 ## Basic Usage
 
+### OpenAI
+
 ```python
-from ks_openai import generate_response
+from kloud_services.openai import generate_response
 
 # Create a list of messages
 messages = [
@@ -37,32 +40,65 @@ response = generate_response(
 print(response.choices[0].message.content)
 ```
 
-## Advanced Usage
+### Claude
 
 ```python
-from ks_openai import generate_response
+from kloud_services.claude import generate_response
 
-# Example with all parameters
+# Generate a response
+response = generate_response(
+    model="claude-3-sonnet-20240229",
+    prompt="What is Python?",
+    max_tokens=1000,
+    temperature=0.7
+)
+
+# Print the response
+print(response.content)
+```
+
+## Advanced Usage
+
+### OpenAI Advanced
+
+```python
+from kloud_services.openai import generate_response
+
 response = generate_response(
     model="gpt-4o-2024-05-13",
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "What is Python?"}
     ],
-    temperature=0.7,           # Controls randomness (0.0 to 1.0)
-    max_tokens=150,           # Maximum length of response
-    top_p=0.9,               # Nucleus sampling parameter
-    frequency_penalty=0.5,    # Reduces repetition of similar words
-    presence_penalty=0.5,     # Encourages new topics
-    stop=["\n", "END"]       # Stop sequences
+    temperature=0.7,
+    max_tokens=150,
+    top_p=0.9,
+    frequency_penalty=0.5,
+    presence_penalty=0.5,
+    stop=["\n", "END"]
+)
+```
+
+### Claude Advanced
+
+```python
+from kloud_services.claude import generate_response
+
+response = generate_response(
+    model="claude-3-sonnet-20240229",
+    prompt="What is Python?",
+    system="You are a helpful coding assistant.",
+    max_tokens=1000,
+    temperature=0.7,
+    top_p=0.9,
+    top_k=10,
+    stop_sequences=["\n\n"]
 )
 ```
 
 ## API Reference
 
-### `generate_response()`
-
-Main function to generate responses from the API.
+### OpenAI `generate_response()`
 
 #### Parameters:
 
@@ -75,9 +111,22 @@ Main function to generate responses from the API.
 - `presence_penalty` (float, optional): Penalty for new tokens (0.0 to 2.0)
 - `stop` (List[str], optional): List of stopping sequences
 
-#### Returns:
+### Claude `generate_response()`
 
-`OpenAIResponse` object with the following structure:
+#### Parameters:
+
+- `model` (str, required): The model identifier (e.g., "claude-3-sonnet-20240229")
+- `prompt` (str, required): The input prompt
+- `system` (str, optional): System message for context
+- `max_tokens` (int, optional): Maximum number of tokens in response
+- `temperature` (float, optional): Sampling temperature (0.0 to 1.0)
+- `top_p` (float, optional): Nucleus sampling parameter (0.0 to 1.0)
+- `top_k` (int, optional): Top-k sampling parameter
+- `stop_sequences` (List[str], optional): List of stopping sequences
+
+## Response Structures
+
+### OpenAI Response
 ```python
 class OpenAIResponse:
     id: str                   # Response identifier
@@ -87,66 +136,31 @@ class OpenAIResponse:
     usage: Usage             # Token usage statistics
 ```
 
-## Response Structure
-
-### Message
+### Claude Response
 ```python
-class Message:
-    role: str        # Role of the message (e.g., "user", "assistant")
-    content: str     # Content of the message
-```
-
-### Content Filter Results
-```python
-class ContentFilterSeverity:
-    filtered: bool   # Whether content was filtered
-    severity: str    # Severity level of content
-
-class ContentFilterResults:
-    hate: ContentFilterSeverity
-    self_harm: ContentFilterSeverity
-    sexual: ContentFilterSeverity
-    violence: ContentFilterSeverity
+class ClaudeResponse:
+    id: str                   # Response identifier
+    content: str             # Response content
+    model: str               # Model used
+    stop_reason: str         # Reason for stopping
+    stop_sequence: str       # Sequence that caused the stop
+    usage: Usage             # Token usage statistics
 ```
 
 ## Error Handling
 
 ```python
 try:
-    response = generate_response(
-        model="gpt-4o-2024-05-13",
-        messages=[{"role": "user", "content": "Hello"}]
-    )
+    response = generate_response(...)
 except Exception as e:
     print(f"Error: {str(e)}")
-```
-
-## Examples
-
-### Simple Question-Answer
-```python
-messages = [{"role": "user", "content": "What is Python?"}]
-response = generate_response(model="gpt-4o-2024-05-13", messages=messages)
-print(response.choices[0].message.content)
-```
-
-### Conversation with Context
-```python
-messages = [
-    {"role": "system", "content": "You are a helpful assistant."},
-    {"role": "user", "content": "What is Python?"},
-    {"role": "assistant", "content": "Python is a programming language."},
-    {"role": "user", "content": "What can I build with it?"}
-]
-response = generate_response(model="gpt-4o-2024-05-13", messages=messages)
-print(response.choices[0].message.content)
 ```
 
 ## Requirements
 
 - Python 3.7+
-- requests
-- pydantic
+- requests >= 2.32.3
+- pydantic >= 2.0.0
 
 ## License
 

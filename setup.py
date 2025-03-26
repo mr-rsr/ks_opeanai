@@ -16,7 +16,7 @@ setup(
     long_description_content_type="text/markdown",
     author="Raj Aryan",
     author_email="raj@kloudstac.com",
-    url="https://github.com/mr-rsr/ks_openai",
+    url="https://github.com/mr-rsr/ks_opeanai",
     classifiers=[
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
