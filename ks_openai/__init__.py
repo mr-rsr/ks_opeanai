@@ -1,3 +1,11 @@
-from .api import generate_response, Message  # Add Message import here
+from .openai import OpenAI, Message as OpenAIMessage, OpenAIResponse
+from .claude import Claude, Message as ClaudeMessage, ClaudeResponse
 
-__all__ = ["generate_response", "Message"]  # Expose Message in the package
+__all__ = [
+    "OpenAI", 
+    "OpenAIMessage", 
+    "OpenAIResponse",
+    "Claude",
+    "ClaudeMessage",
+    "ClaudeResponse"
+]

@@ -7,7 +7,68 @@ from .utils import make_request
 class Message(BaseModel):
     role: str
     content: str
+import os
+from typing import Optional, List, Dict, Any
+from .models import OpenAIResponse
 
+class OpenAI:
+    def __init__(
+        self, 
+        api_key: Optional[str] = None,
+        base_url: str = "http://20.197.22.86:3000"
+    ):
+        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
+        if not self.api_key:
+            raise ValueError("API key must be provided or set in OPENAI_API_KEY environment variable")
+        self.base_url = base_url
+        self.chat = Chat(self)
+
+class Chat:
+    def __init__(self, client: OpenAI):
+        self.client = client
+        self.completions = Completions(client)
+
+class Completions:
+    def __init__(self, client: OpenAI):
+        self.client = client
+
+    def create(
+        self,
+        model: str,
+        messages: List[Dict[str, str]],
+        temperature: Optional[float] = None,
+        max_tokens: Optional[int] = None,
+        top_p: Optional[float] = None,
+        frequency_penalty: Optional[float] = None,
+        presence_penalty: Optional[float] = None,
+        stop: Optional[List[str]] = None,
+    ) -> OpenAIResponse:
+        from .utils import make_request
+
+        url = f"{self.client.base_url}/api/model/openai"
+        headers = {
+            "Authorization": f"Bearer {self.client.api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "model": model,
+            "messages": messages,
+        }
+        
+        for key, value in {
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "top_p": top_p,
+            "frequency_penalty": frequency_penalty,
+            "presence_penalty": presence_penalty,
+            "stop": stop
+        }.items():
+            if value is not None:
+                payload[key] = value
+
+        response_data = make_request("POST", url, headers=headers, json=payload)
+        return OpenAIResponse(**response_data)
 class ContentFilterSeverity(BaseModel):
     filtered: bool
     severity: str

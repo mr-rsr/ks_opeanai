@@ -1,4 +1,6 @@
+LICENSE
 README.md
+pyproject.toml
 setup.py
 ks_openai/__init__.py
 ks_openai/api.py
