@@ -1,13 +1,21 @@
-from ks_boto_wrapper.client import get_bedrock_client
-from ks_boto_wrapper.models.claude import Claude
+from setuptools import setup, find_packages
 
-client = get_bedrock_client(
-    aws_access_key_id=None,
-    aws_secret_access_key=None
+setup(
+    name="ks_boto_wrapper",
+    version="0.1.0",
+    description="A wrapper library for boto3 utilities",
+    author="Aswin Pratapsingh",
+    author_email="pratapsinghaswin@gmail.com",
+    packages=find_packages(),
+    install_requires=[
+        "boto3",
+        "pydantic",
+        "requests"
+    ],
+    python_requires=">=3.7",
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
 )
-claude = Claude(client, "anthropic.claude-3-sonnet-20240229-v1:0")
-
-messages = [{"role": "user", "content": "What is the capital of India?"}]
-response = claude.invoke(messages)
-
-print(client)
