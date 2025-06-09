@@ -7,7 +7,7 @@ from ks_boto_wrapper import Claude
 from ks_boto_wrapper.client import Client
 
 client = Client(
-    aws_access_key_id='YOUR_ACCESS_KEY',
+    aws_access_key_id='1234',
     aws_secret_access_key='YOUR_SECRET_ACCESS_KEY',
     endpoint_url=''  # Your endpoint
 )

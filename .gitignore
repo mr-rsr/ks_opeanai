@@ -1,0 +1,13 @@
+venv/
+
+tests/
+
+__pycache__/
+
+.idea
+
+kloud_services/
+
+.vscode/
+.qodo/
+

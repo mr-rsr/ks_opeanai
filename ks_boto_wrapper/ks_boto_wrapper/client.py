@@ -5,16 +5,13 @@ import os
 from pydantic import BaseModel, Field
 
 
-
-
-
 class Client:
     def __init__(self,
                  runtime:Optional[str] = 'bedrock-runtime',
                  region_name:Optional[str] = 'us-east-1',
                  aws_access_key_id:Optional[str] = None,
                  aws_secret_access_key:Optional[str] = None,
-                 endpoint_url = 'https://bedrock-runtime.us-east-1.amazonaws.com'):
+                 endpoint_url = 'http://20.197.39.253:8080/api/model/awsboto'):
         
         self.aws_access_key_id= aws_access_key_id or os.getenv("AWS_ACCESS_KEY_ID")
         self.aws_secret_access_key = aws_secret_access_key or os.getenv("AWS_SECRET_ACCESS_KEY")

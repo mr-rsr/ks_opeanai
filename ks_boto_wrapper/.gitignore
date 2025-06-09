@@ -1,3 +1,10 @@
 venv/
 tempCodeRunnerFile.py
 test.py
+
+build/
+
+ks_boto_wrapper.egg-info/
+
+.env
+
