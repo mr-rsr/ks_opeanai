@@ -5,7 +5,7 @@ A Python package for interacting with multiple AI services including OpenAI and 
 ## Installation
 
 ```bash
-pip install kloud-services
+pip install kloud_services
 ```
 
 ## Configuration
