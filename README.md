@@ -1,6 +1,6 @@
-# kloud-services
+# KloudStac OpenAI & Claude Integration
 
-A Python package for interacting with multiple AI services including OpenAI and Anthropic Claude APIs.
+This project demonstrates how to use the `kloud_services` Python package to interact with both Claude and OpenAI models via a unified client interface.
 
 ## Installation
 
@@ -8,160 +8,74 @@ A Python package for interacting with multiple AI services including OpenAI and 
 pip install kloud_services
 ```
 
+## Usage
+
+### Using Claude
+
+The `generate_response` method for Claude allows you to send a user message and customize the generation parameters:
+
+```python
+from kloud_services.client import Client
+from kloud_services.claude import Claude
+
+client = Client(access_key="YOUR_ACCESS_KEY")
+claude = Claude(client)
+
+response = claude.generate_response(
+    user_message="hello",
+    temperature=0.7,           # Optional: Controls randomness (default None)
+    top_p=0.9,                 # Optional: Nucleus sampling (default None)
+    max_tokens=1024,           # Optional: Max tokens in response (default 1024)
+    model="anthropic.claude-3-sonnet-20240229-v1:0"  # Optional: Claude model version
+)
+print(response)
+```
+
+**Parameters:**
+- `user_message` (str): The prompt or message from the user.
+- `temperature` (float, optional): Sampling temperature for randomness.
+- `top_p` (float, optional): Nucleus sampling probability.
+- `max_tokens` (int, optional): Maximum number of tokens in the response.
+- `model` (str, optional): Claude model to use.
+
+### Using OpenAI
+
+The `generate_response` method for OpenAI allows you to send a user message and customize various generation parameters:
+
+```python
+from kloud_services.client import Client
+from kloud_services.openai import OpenAI
+
+client = Client(access_key="YOUR_ACCESS_KEY")
+openai = OpenAI(client)
+
+response = openai.generate_response(
+    user_message="hello",
+    model="gpt-3.5-turbo",         # Optional: OpenAI model version (default "gpt-3.5-turbo")
+    temperature=0.7,               # Optional: Controls randomness (default None)
+    max_tokens=512,                # Optional: Max tokens in response (default None)
+    top_p=0.9,                     # Optional: Nucleus sampling (default None)
+    frequency_penalty=0.0,         # Optional: Penalize new tokens based on frequency (default None)
+    presence_penalty=0.0,          # Optional: Penalize new tokens based on presence (default None)
+    stop=["\n"]                    # Optional: Sequences where the API will stop generating further tokens (default None)
+)
+print(response)
+```
+
+**Parameters:**
+- `user_message` (str): The prompt or message from the user.
+- `model` (str, optional): OpenAI model to use (default: `"gpt-3.5-turbo"`).
+- `temperature` (float, optional): Sampling temperature for randomness.
+- `max_tokens` (int, optional): Maximum number of tokens in the response.
+- `top_p` (float, optional): Nucleus sampling probability.
+- `frequency_penalty` (float, optional): Penalizes repeated tokens.
+- `presence_penalty` (float, optional): Penalizes new tokens based on their presence.
+- `stop` (list of str, optional): Sequences where the API will stop generating further tokens.
+
 ## Configuration
 
-Set your API keys as environment variables:
-
-```python
-import os
-os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
-os.environ["ANTHROPIC_API_KEY"] = "your-claude-api-key"
-```
-
-## Basic Usage
-
-### OpenAI
-
-```python
-from kloud_services.openai import generate_response
-
-# Create a list of messages
-messages = [
-    {"role": "user", "content": "What is Python?"}
-]
-
-# Generate a response
-response = generate_response(
-    model="gpt-4o-2024-05-13",
-    messages=messages
-)
-
-# Print the response
-print(response.choices[0].message.content)
-```
-
-### Claude
-
-```python
-from kloud_services.claude import generate_response
-
-# Generate a response
-response = generate_response(
-    model="claude-3-sonnet-20240229",
-    prompt="What is Python?",
-    max_tokens=1000,
-    temperature=0.7
-)
-
-# Print the response
-print(response.content)
-```
-
-## Advanced Usage
-
-### OpenAI Advanced
-
-```python
-from kloud_services.openai import generate_response
-
-response = generate_response(
-    model="gpt-4o-2024-05-13",
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "What is Python?"}
-    ],
-    temperature=0.7,
-    max_tokens=150,
-    top_p=0.9,
-    frequency_penalty=0.5,
-    presence_penalty=0.5,
-    stop=["\n", "END"]
-)
-```
-
-### Claude Advanced
-
-```python
-from kloud_services.claude import generate_response
-
-response = generate_response(
-    model="claude-3-sonnet-20240229",
-    prompt="What is Python?",
-    system="You are a helpful coding assistant.",
-    max_tokens=1000,
-    temperature=0.7,
-    top_p=0.9,
-    top_k=10,
-    stop_sequences=["\n\n"]
-)
-```
-
-## API Reference
-
-### OpenAI `generate_response()`
-
-#### Parameters:
-
-- `model` (str, required): The model identifier (e.g., "gpt-4o-2024-05-13")
-- `messages` (List[dict], required): List of message objects with 'role' and 'content'
-- `temperature` (float, optional): Sampling temperature (0.0 to 1.0)
-- `max_tokens` (int, optional): Maximum number of tokens in response
-- `top_p` (float, optional): Nucleus sampling parameter (0.0 to 1.0)
-- `frequency_penalty` (float, optional): Penalty for frequent tokens (0.0 to 2.0)
-- `presence_penalty` (float, optional): Penalty for new tokens (0.0 to 2.0)
-- `stop` (List[str], optional): List of stopping sequences
-
-### Claude `generate_response()`
-
-#### Parameters:
-
-- `model` (str, required): The model identifier (e.g., "claude-3-sonnet-20240229")
-- `prompt` (str, required): The input prompt
-- `system` (str, optional): System message for context
-- `max_tokens` (int, optional): Maximum number of tokens in response
-- `temperature` (float, optional): Sampling temperature (0.0 to 1.0)
-- `top_p` (float, optional): Nucleus sampling parameter (0.0 to 1.0)
-- `top_k` (int, optional): Top-k sampling parameter
-- `stop_sequences` (List[str], optional): List of stopping sequences
-
-## Response Structures
-
-### OpenAI Response
-```python
-class OpenAIResponse:
-    id: str                   # Response identifier
-    choices: List[Choice]     # List of response choices
-    created: int             # Timestamp
-    model: str               # Model used
-    usage: Usage             # Token usage statistics
-```
-
-### Claude Response
-```python
-class ClaudeResponse:
-    id: str                   # Response identifier
-    content: str             # Response content
-    model: str               # Model used
-    stop_reason: str         # Reason for stopping
-    stop_sequence: str       # Sequence that caused the stop
-    usage: Usage             # Token usage statistics
-```
-
-## Error Handling
-
-```python
-try:
-    response = generate_response(...)
-except Exception as e:
-    print(f"Error: {str(e)}")
-```
-
-## Requirements
-
-- Python 3.7+
-- requests >= 2.32.3
-- pydantic >= 2.0.0
+Replace `"YOUR_ACCESS_KEY"` with your actual access key.
 
 ## License
 
-This project is licensed under the MIT License.
+See [LICENSE](./LICENSE) for details.
