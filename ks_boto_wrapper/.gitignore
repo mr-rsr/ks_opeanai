@@ -25,3 +25,4 @@ wheels/
 .installed.cfg
 *.egg
 .pypirc
+.idea/
